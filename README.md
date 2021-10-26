@@ -8,20 +8,33 @@ Backend Demo Node JS Project
 
 ### 3) Modify configuration:
 
-init-letsencrypt.sh fetches and ensures the renewal of a Let’s Encrypt certificate for one or multiple domains in a docker-compose setup with nginx. This is useful when you need to set up nginx as a reverse proxy for an application.
+**app/init-letsencrypt.sh** fetches and ensures the renewal of a Let’s Encrypt certificate for one or multiple domains in a docker-compose setup with nginx. This is useful when you need to set up nginx as a reverse proxy for an application.
 
 a) Add domains and email addresses to **app/init-letsencrypt.sh**
 b) Replace all occurrences of dockernodejs.com with primary domain (the first one you added to init-letsencrypt.sh) in nginx/config/nginx.conf
 
 ### 4) Run the init script:
 
-     ./app/init-letsencrypt.sh
+     $ ./app/init-letsencrypt.sh
  
 ### 5) Run the server:
 
-     docker-compose up --build
+     $ docker-compose up --build &
+     $ docker-compose ps
+     
+     Access the Application using http://IP
+     
+     The following Docker Images are used for this Application flow. 
+          
+              **Proxy Server -> Node Js -> MongoDB & MySQL**
+              
+     a) nodejs-app (custom Image using Dockerfile)
+     b) mongo 
+     c) mysql
+     d) nginx (for reverse proxy)
+     e) certbot (for SSL Cert)
      
 ### Important Points/Limitations:
 
-1) nginx/config/nginx.conf is implemented for http and https protocols. But as the domain DNS limitation, it has been configured for http protocol.
-2) This app has been migrated to single container based using docker and docker-compose as the time constraint, next it can be extended to multi container based using Container Orchestration Engine like K8s.
+1) nginx/config/nginx.conf is implemented for http and https protocols. But as the domain/DNS limitation, it has been enabled for http protocol only.
+2) This app has been migrated to single container based using docker and docker-compose as the time constraint, next it can be extended to multi container deployment using **Container Orchestration Engine** like K8s.
