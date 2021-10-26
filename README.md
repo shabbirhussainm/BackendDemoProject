@@ -1,2 +1,27 @@
 # BackendDemoProject
 Backend Demo Node JS Project
+
+## Installation
+### 1) Install docker & docker-compose.
+
+### 2) Clone this repository: git clone https://github.com/shabbirhussainm/BackendDemoProject.git .
+
+### 3) Modify configuration:
+
+init-letsencrypt.sh fetches and ensures the renewal of a Let’s Encrypt certificate for one or multiple domains in a docker-compose setup with nginx. This is useful when you need to set up nginx as a reverse proxy for an application.
+
+a) Add domains and email addresses to **app/init-letsencrypt.sh**
+b) Replace all occurrences of dockernodejs.com with primary domain (the first one you added to init-letsencrypt.sh) in nginx/config/nginx.conf
+
+### 4) Run the init script:
+
+     ./app/init-letsencrypt.sh
+ 
+### 5) Run the server:
+
+     docker-compose up --build
+     
+### Important Points/Limitations:
+
+1) nginx/config/nginx.conf is implemented for http and https protocols. But as the domain DNS limitation, it has been configured for http protocol.
+2) This app has been migrated to single container based using docker and docker-compose as the time constraint, next it can be extended to multi container based using Container Orchestration Engine like K8s.
