@@ -1,0 +1,71 @@
+version: "3"
+services:
+       nodejs-app:
+           container_name: nodejs-app
+           build: 
+             context: ./app
+             dockerfile: ./Dockerfile 
+           restart: always
+           depends_on:
+             - mysql
+             - mongo
+           ports:
+             - "51005:51005"
+           links:
+             - mongo
+             - mysql 
+       mongo:
+             container_name: mongo
+             image: mongo
+             environment:
+                MONGO_INITDB_DATABASE: mongo
+#                MONGO_INITDB_ROOT_PASSWORD: rootpassword
+             volumes:
+               - ./data:/data/db
+             #ports:
+             #  - "27017:27017"
+       mysql:
+             container_name: mysql
+             image: mysql
+             restart: always
+             #env_file: ./.env
+             security_opt:
+                - seccomp:unconfined
+             environment:
+               MYSQL_ROOT_PASSWORD: password # $MYSQL_ROOT_PASSWORD
+               MYSQL_DATABASE: mysql # $MYSQL_DATABASE
+               MYSQL_USER: root
+               MYSQL_PASSWORD: password
+            # ports:
+             #  - "3306:3306" # $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+             volumes: 
+               - db-config:/etc/mysql
+               - db-data:/var/lib/mysql
+               - ./db/backup/files/:/data_backup/data
+       reverse:
+            container_name: reverse
+            hostname: reverse
+            image: nginx
+            ports:
+              - 80:80
+              - 443:443
+            depends_on:
+              - nodejs-app
+              - certbot
+            links:
+              - nodejs-app
+            command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+            volumes:
+              - ./nginx/config/:/etc/nginx
+              - ./nginx/certbot/conf:/etc/letsencrypt
+              - ./nginx/certbot/www:/var/www/certbot
+       certbot:
+            container_name: certbot
+            image: certbot/certbot
+            entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+            volumes:
+              - ./nginx/certbot/conf:/etc/letsencrypt
+              - ./nginx/certbot/www:/var/www/certbot
+volumes: 
+  db-config:
+  db-data:
