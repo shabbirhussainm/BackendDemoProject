@@ -8,18 +8,17 @@ Backend Demo Node JS Project
 
 ### 3) Modify configuration:
 
-**app/init-letsencrypt.sh** fetches and ensures the renewal of a Let’s Encrypt certificate for one or multiple domains in a docker-compose setup with nginx. This is useful when you need to set up nginx as a reverse proxy for an application.
+**init-letsencrypt.sh** fetches and ensures the renewal of a Let’s Encrypt certificate for one or multiple domains in a docker-compose setup with nginx. This is useful when you need to set up nginx as a reverse proxy for an application.
 
-a) Add domains and email addresses to **app/init-letsencrypt.sh**
+a) Add domains and email addresses to **init-letsencrypt.sh**
 b) Replace all occurrences of dockernodejs.com with primary domain (the first one you added to init-letsencrypt.sh) in nginx/config/nginx.conf
 
 ### 4) Run the init script:
 
-     $ ./app/init-letsencrypt.sh
+     $ ./init-letsencrypt.sh
  
-### 5) Run the server:
+### 5) Access the App:
 
-     $ docker-compose up --build &
      $ docker-compose ps
      
      Access the Application using http://IP
